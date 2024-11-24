@@ -43,10 +43,10 @@ public class UserService {
     }
 
     //This is the method that will be called from UserLoginApplication to validate the input against the file contents
-
+    //Modify the if statement to add the .equalsIgnoreCase method to the username to make it case-insensitive
     public User validUser(User[] users, String username, String password) {
         for (User user : users) {
-            if (user != null && user.getUsername().equals(username) && user.getPassword().equals(password)) {
+            if (user != null && user.getUsername().equalsIgnoreCase(username) && user.getPassword().equals(password)) {
                 return user;
             }
         }

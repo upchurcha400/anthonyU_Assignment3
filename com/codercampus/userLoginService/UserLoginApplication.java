@@ -27,6 +27,9 @@ public class UserLoginApplication {
             System.out.println("Please Enter Your Password: ");
             inputPass = scanner.nextLine();
 
+            //Forgot to convert the input to lower case to match the file contents
+            isAuser = userService.validUser(users, inputUser.toLowerCase(), inputPass);
+
             //This is calling the UserService method we created to compare input to file contents
 
             isAuser = userService.validUser(users, inputUser, inputPass);
