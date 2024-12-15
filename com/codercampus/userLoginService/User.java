@@ -1,7 +1,5 @@
 package com.codercampus.userLoginService;
 
-//This is the class that will establish the objects being read from the file and give them purpose in the program
-//To think, this all this started with the POJO lesson :-/
 
 public class User {
     private String username;
