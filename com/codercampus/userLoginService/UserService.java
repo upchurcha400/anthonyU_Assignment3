@@ -12,24 +12,26 @@ import java.io.IOException;
 public class UserService {
     //Set the array size to 10 just in case users are added later
 
-    public User[] readFile(String fileName) {
+    public User[] loadUsers(String fileName) {
 
         //this will create a new file reader as an instantiation of the BufferedReader class. It will make a string out of the
         //line of data it pulls from the file and then it will break that down csv style to complete the required array requirements
         //It is also going to count how many lines of user data it reads from the file
 
-        User[] users = new User[10];
+        User[] users = new User[4];
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))) {
             String line;
-            int usersRead = 0;
+            int count = 0;
 
             //this will read the file line by line and split the data into an array of strings
 
-            while ((line = bufferedReader.readLine()) != null && usersRead < users.length) {
+            while ((line = bufferedReader.readLine()) != null && count < users.length) {
                 String[] userDetails = line.split(",");
-                users[usersRead] = new User(userDetails[0], userDetails[1], userDetails[2]);
-                usersRead++;
+                String username = userDetails[0];
+                String password = userDetails[1];
+                String name = userDetails[2];
+                users[count++] = new User(username, password, name);
             }
 
             //Here is where the program will catch any file exceptions and tell the user why on the console
@@ -44,7 +46,7 @@ public class UserService {
 
     //This is the method that will be called from UserLoginApplication to validate the input against the file contents
     //Modify the if statement to add the .equalsIgnoreCase method to the username to make it case-insensitive
-    public User validUser(User[] users, String username, String password) {
+    public User validateUser(User[] users, String username, String password) {
         for (User user : users) {
             if (user != null && user.getUsername().equalsIgnoreCase(username) && user.getPassword().equals(password)) {
                 return user;

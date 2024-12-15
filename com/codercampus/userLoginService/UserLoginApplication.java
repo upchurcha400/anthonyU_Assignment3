@@ -8,51 +8,49 @@ public class UserLoginApplication {
 
     public static void main(String[] args) {
         UserService userService = new UserService();
-        User[] users = userService.readFile("data.txt");
+        User[] users = userService.loadUsers("data.txt");
 
         //Then the program needs to have a way to take user input to validate against the file contents
         //We are also establish the variables use in the loop and for the scanner to store its input
 
-        Scanner scanner = new Scanner(System.in);
-        String inputUser;
-        String inputPass;
-        int logInAttempts = 0;
-        User isAuser = null;
+        try (Scanner scanner = new Scanner(System.in)) {
+            String inputUser;
+            String inputPassword;
+            int logInAttempts = 0;
+            final int MAX_LOGIN_ATTEMPTS = 5;
+            User validUser = null;
 
-        //The goal is to validate the user input while limiting the attempts to login
+            //The goal is to validate the user input while limiting the attempts to login
 
-        while (logInAttempts < 5 && isAuser == null) {
-            System.out.println("Please Enter Your Username (Hint: email address): ");
-            inputUser = scanner.nextLine();
-            System.out.println("Please Enter Your Password: ");
-            inputPass = scanner.nextLine();
+            while (logInAttempts < MAX_LOGIN_ATTEMPTS && validUser == null) {
+                System.out.println("Please Enter Your Username (Hint: email address): ");
+                inputUser = scanner.nextLine();
+                System.out.println("Please Enter Your Password: ");
+                inputPassword = scanner.nextLine();
 
-            //Forgot to convert the input to lower case to match the file contents
-            isAuser = userService.validUser(users, inputUser.toLowerCase(), inputPass);
+               //This is calling the UserService method we created to compare input to file contents
 
-            //This is calling the UserService method we created to compare input to file contents
+                validUser = userService.validateUser(users, inputUser, inputPassword);
 
-            isAuser = userService.validUser(users, inputUser, inputPass);
+                //I established the return null value in the UserService method to stop automatic logins
+                //If the input matches the file, then isAUser != null and a welcome message will print
 
-            //I established the return null value in the UserService method to stop automatic logins
-            //If the input matches the file, then isAUser != null and a welcome message will print
+                if (validUser != null) {
+                    System.out.println("Welcome " + validUser.getName() + "!");
 
-            if (isAuser != null) {
-                System.out.println("Welcome " +  isAuser.getName() + "!");
+                    //Otherwise, the null value stays and an error message is printed, then the loop continues and increments the counter
 
-            //Otherwise, the null value stays and an error message is printed, then the loop continues and increments the counter
+                } else {
+                    System.out.println("Invalid username or password. Please try again.");
+                    logInAttempts++;
+                }
+            }
+            //Once the counter maxes out, then the loop breaks and this if statement begins, then the scanner closes
 
-            } else {
-                System.out.println("Invalid username or password. Please try again.");
-                logInAttempts++;
+            if (validUser == null) {
+                System.out.println("Too many failed login attempts. Please try again later.");
             }
         }
-        //Once the counter maxes out, then the loop breaks and this if statement begins, then the scanner closes
 
-        if (isAuser == null) {
-            System.out.println("Too many failed login attempts. Please try again later.");
-        }
-
-        scanner.close();
     }
 }
